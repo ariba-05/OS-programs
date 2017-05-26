@@ -1,0 +1,94 @@
+#include<stdio.h>
+#include<conio.h>
+#include<stdlib.h>
+
+int main(){
+	
+	int i,j,n,r,x,flag=0,alloc[10][5],max[10][5],need[10][5],avail[5],finish[10],work[5];
+	
+	printf("Enter no of resources:\n");
+	scanf("%d",&r);
+	printf("Enter no of processes:\n");
+	scanf("%d",&n);
+	printf("Enter allocation matrix:\n");
+	for(i=0;i<n;i++){
+		for(j=0;j<r;j++){
+			scanf("%d",&alloc[i][j]);
+		}
+	}
+	//accepting matrices
+	printf("Enter max matrix:\n");
+	for(i=0;i<n;i++){
+		for(j=0;j<r;j++){
+			scanf("%d",&max[i][j]);
+			need[i][j]=max[i][j]-alloc[i][j];
+		}
+	}
+	printf("Enter available:\n");
+	for(j=0;j<r;j++){
+		scanf("%d",&avail[j]);
+		work[j]=avail[j];  //initialization for work=available
+	}
+	//printing matrices
+	printf("Allocation matrix:\n");
+	for(i=0;i<n;i++){
+		for(j=0;j<r;j++){
+			printf("%d	",alloc[i][j]);
+		}
+		printf("\n");
+	}
+	printf("Need matrix:\n");
+	for(i=0;i<n;i++){
+		for(j=0; j<r;j++){
+			printf("%d	",need[i][j]);
+		}
+		printf("\n");
+	}
+	
+	//assigning false to all processes in finish
+	for(i=0;i<n;i++){
+		finish[i]=0;
+	}
+	printf("\n\n");
+	i=0;
+	x=0;
+	while(flag==0&&x<(n*n)){
+		//printf("|[%d %d %d]:%d|",work[0],work[1],work[2],i);
+		if(finish[i]==0){
+			for(j=0;j<r;j++){
+				if(!(need[i][j]<=work[j]))
+					break;
+			}
+			if(need[i][j-1]<=work[j-1]&&j==r){
+				
+				finish[i]=1;
+				for(j=0;j<r;j++){
+					work[j]+=alloc[i][j];
+				}
+				printf("P%d	",i);
+			}
+		}
+		
+		//checking if all arent true
+		for(j=0;j<n;j++){
+			if(finish[j]==0){
+				flag=0;
+				break;
+			}
+		}
+		if(j==n&&finish[j-1]==1)
+		{   flag=1;
+			printf("\nsystem is safe");
+			break;
+			}
+		x++;
+		i=x%n;
+		
+	}
+	if(x==(n*n)){
+		printf("\nSystem not safe");
+	}
+	return 0;
+}
+
+
