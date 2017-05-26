@@ -1,0 +1,89 @@
+#include<stdio.h>
+#include<conio.h>
+#include<stdlib.h>
+
+
+int n,g=0,at[10],bt[10],gantt[50],wtgstate[10];
+
+
+int main(){
+	
+	int i,j,t,x,srt,min,sum_bt=0;
+	
+	printf("Enter no of processes: ");
+	scanf("%d",&n);
+	
+	printf("\nEnter ATs for all processes: ");  //assuming user inputs sorted ATs in increasing order and AT for the first process is 0
+	for(i=0;i<n;i++){
+		scanf("%d",&at[i]);
+	}
+	
+	printf("\nEnter BTs for all processes: ");
+	for(i=0;i<n;i++){
+		scanf("%d",&bt[i]);
+	}
+	
+	
+	
+	for(i=0;i<n;i++){
+		sum_bt+=bt[i];
+		wtgstate[i]=0;
+	}
+	gantt[g++]=0;
+	bt[0]--;
+	srt=bt[0];
+	wtgstate[0]=2;
+	for(t=1;t<sum_bt;t++,g++){
+		//printf("(%d,%d)",gantt[g-1],bt[gantt[g-1]]);
+		//is some process arriving?
+		for(i=0;i<n;i++){
+			if(wtgstate[i]==0){
+				if(at[i]==t){	//found one => process needs to be changed to waiting
+					wtgstate[i]=1;
+					if(bt[i]<srt){	//is its BT less than the RTs of ones in waiting?
+						x=i;
+						srt=bt[i];
+					}
+					break;
+				}
+			}
+			
+		}
+		//pulling the SRT one out if found
+
+		if(srt<bt[gantt[g-1]]){	//if the one in queue has SRT than the one in gantt
+			wtgstate[gantt[g-1]]=1;
+			gantt[g]=x;
+			wtgstate[x]=2;
+			bt[x]--;
+			//assigning srt to the least one n waiting state
+			min=1000;
+			for(i=0;i<n;i++){
+				if(wtgstate[i]==1){
+					if(bt[i]<min){
+						min=bt[i];
+						x=i;
+					}
+					
+				}
+			}
+			srt=min;
+		}
+		else{
+			gantt[g]=gantt[g-1];
+			bt[gantt[g]]--;
+		}
+		
+		if(bt[gantt[g]]==0){
+			wtgstate[gantt[g]]=-1;		//process executed
+			bt[gantt[g]]=1000;
+		}
+		
+	}
+
+	for(i=0;i<g;i++){
+		printf("P%d|",gantt[i]+1);
+	}
+	
+	return (0);
+}
