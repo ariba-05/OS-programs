@@ -1,0 +1,85 @@
+#include<stdio.h>
+#include<conio.h>
+#include<stdlib.h>
+
+int f,frames[5];
+int search(int p){
+	int i;
+	for(i=0;i<f;i++){
+		if(frames[i]==p)
+			return 0;
+	}
+	return -1;
+	
+}
+
+
+int main(){
+	int i,j,n,k,x,max,retvalue,pages[30];
+	
+	
+	printf("Enter no. of pages: ");
+	scanf("%d",&n);
+	printf("\nEnter no of frames: ");
+	scanf("%d",&f);
+	printf("\nEnter pages:");
+	for(i=0;i<n;i++){
+		scanf("%d",&pages[i]);
+	}
+
+	for(i=0;i<f;i++){
+		frames[i]=pages[i];	
+	}
+	
+	for(i=0;i<f;i++){
+		for(j=0;j<=i;j++){
+			printf("%d	",frames[j]);
+		}		
+		printf("\n");
+	}//the initial page faults
+	
+	
+	for(i=f;i<n;i++){
+		
+		max=0;
+		x=0;
+		retvalue=search(pages[i]);
+		if(retvalue==-1){//no page fault
+			
+			//optimal replacement
+			for(j=0;j<f;j++){   //for every frame
+				
+				for(k=i+1;k<n;k++){  //searching the reference string for the frame
+					if(pages[k]==frames[j]){	//frame found in ref string
+						if(k>max){
+							x=j;
+							max=k;
+						}
+					
+						break;			
+					}
+				}
+				if(k==n){
+					x=j;
+					break;
+				}
+			}
+			
+		frames[x]=pages[i];	
+		//printing frames
+		for(j=0;j<f;j++){
+			printf("%d\t",frames[j]);
+		}
+			
+		}
+		
+		else{			//page fault
+		printf("PF");
+	    }
+
+		
+		printf("\n");
+	}
+	
+	return 0;
+}
